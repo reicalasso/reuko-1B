@@ -1,0 +1,10 @@
+model_name: "outputs/sft"           # Önceden SFT ile eğitilmiş model
+reward_model: "OpenAssistant/reward-model-deberta-v3-large"
+batch_size: 4
+learning_rate: 1e-6
+num_train_epochs: 1
+gradient_accumulation_steps: 8
+max_seq_length: 1024
+output_dir: "outputs/rl"
+logging_steps: 50
+fp16: true

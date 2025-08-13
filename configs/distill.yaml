@@ -1,0 +1,12 @@
+teacher_model: "Qwen/Qwen2.5-0.5B"  # Büyük model
+student_model: "Qwen/Qwen2.5-0.3B"  # Küçük model
+dataset_name: "tatsu-lab/alpaca"
+batch_size: 4
+learning_rate: 5e-5
+num_train_epochs: 2
+gradient_accumulation_steps: 4
+alpha_ce: 0.5       # Cross-entropy loss ağırlığı
+alpha_mlm: 0.5      # Knowledge distillation ağırlığı
+output_dir: "outputs/distilled"
+max_seq_length: 1024
+logging_steps: 50

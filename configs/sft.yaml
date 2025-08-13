@@ -1,0 +1,11 @@
+model_name: "Qwen/Qwen2.5-0.5B"  # Temel Qwen2.5 modeli
+dataset_name: "tatsu-lab/alpaca" # Eğitim veri seti
+batch_size: 2                     # GPU memory’ye göre ayarlanabilir
+lr: 5e-5                          # Learning rate
+epochs: 3                         # Epoch sayısı
+quantize: false                    # 8-bit için true yapabilirsin
+gradient_accumulation_steps: 4
+max_seq_length: 1024
+logging_steps: 50
+save_strategy: "epoch"
+output_dir: "outputs/sft"

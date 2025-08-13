@@ -1,0 +1,13 @@
+transformers>=4.41.0
+datasets
+accelerate
+deepspeed
+torch
+sentencepiece
+tiktoken
+peft
+trl>=0.8.6
+bitsandbytes
+huggingface_hub
+pyyaml
+vllm

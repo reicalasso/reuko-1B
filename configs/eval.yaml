@@ -1,0 +1,7 @@
+model_path: "outputs/distilled"  # veya SFT / RL model klasörü
+dataset_name: "tatsu-lab/alpaca"
+max_seq_length: 1024
+batch_size: 4
+metrics:
+  - "accuracy"
+  - "bleu"
