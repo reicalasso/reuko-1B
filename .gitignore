@@ -205,3 +205,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Reuko-1B specific outputs
+reuko_mini/
+outputs/
+models/
+logs/
+cache/
+data_cache/
+runs/
+wandb/
+*.log
+
+# Training checkpoints
+checkpoints/
+*.pt
+*.pth
+*.bin
+*.safetensors
