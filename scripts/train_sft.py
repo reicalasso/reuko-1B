@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 import yaml
 from datasets import load_dataset
 from transformers import TrainingArguments, Trainer
-from src.reuko.models import load_qwen_model
+from reuko.models import load_qwen_model
 
 # Config yükle
 with open("configs/sft.yaml", "r") as f:
