@@ -106,9 +106,8 @@ def main():
         logger.info("=== Reuko-1B Training ===")
         logger.info(f"Task: {args.task}")
         logger.info(f"Model: {config.model.name}")
-        logger.info(f"Output: {config.paths.output_dir}")
-        logger.info(f"Epochs: {config.training.num_epochs}")
-        logger.info(f"Batch size: {config.training.batch_size}")
+        logger.info(f"PEFT (LoRA) enabled: {config.peft.enabled}")
+        logger.info(f"DeepSpeed enabled: {config.deepspeed.enabled}")
         
         if args.dry_run:
             logger.info("Dry run mode - exiting")
@@ -119,14 +118,19 @@ def main():
         
         # Train based on task
         if args.task == "qa":
-            trainer.train_qa()
+            trainer.train("qa")
         elif args.task == "summarization":
-            trainer.train_summarization()
+            trainer.train("summarization")
         else:  # both
-            trainer.train_qa()
-            trainer.train_summarization()
+            logger.info("--- Starting QA model training ---")
+            trainer.train("qa")
             
-        logger.info("Training completed successfully!")
+            logger.info("\n--- Starting Summarization model training ---")
+            # Re-initialize trainer to start from the base model again for the second task
+            trainer_sum = ReukoTrainer(config)
+            trainer_sum.train("summarization")
+            
+        logger.info("All training tasks completed successfully!")
         return 0
         
     except Exception as e:

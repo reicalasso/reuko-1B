@@ -1,118 +1,118 @@
-# Reuko-1B: Mini T5 Pipeline
+# Reuko-1B: Production-Ready 1B+ Parameter NLP Pipeline
 
-Reuko-1B, T5 tabanlı Question Answering (QA) ve Text Summarization görevleri için geliştirilmiş bir mini AI pipeline'dır.
+Reuko-1B, T5 tabanlı 1 milyar ve üzeri parametreli modelleri **Question Answering (QA)** ve **Text Summarization** görevleri için eğitmek ve kullanmak üzere tasarlanmış, modern ve ölçeklenebilir bir AI pipeline'ıdır.
 
-## 🚀 Özellikler
+## 🔥 Modern Özellikler
 
-- **Question Answering**: SQuAD dataset ile eğitilmiş QA modeli
-- **Text Summarization**: CNN/DailyMail dataset ile özetleme
-- **Hızlı Prototipleme**: Mini dataset'ler ile hızlı test
-- **Kolay Kullanım**: Jupyter notebook ile interaktif geliştirme
+- **Büyük Model Desteği**: 1B+ parametreli özel T5 mimarisi ve Hugging Face modelleri.
+- **Verimli Eğitim**: **DeepSpeed ZeRO** (Stage 2/3) ile bellek optimizasyonu.
+- **PEFT (LoRA)**: **Parameter-Efficient Fine-Tuning** ile daha az kaynakla hızlı eğitim.
+- **Yüksek Performans**: **BF16/FP16 mixed-precision** ve **fused optimizers** desteği.
+- **Multi-GPU Hazır**: **Hugging Face Accelerate** ile kolayca çoklu GPU'ya ölçeklendirme.
+- **İzleme ve Loglama**: **Weights & Biases (W&B)** entegrasyonu ile canlı metrik takibi.
+- **Modüler ve Genişletilebilir**: Temiz, profesyonel ve ölçeklenebilir kod yapısı.
 
-## 📋 Gereksinimler
+## ⚙️ Donanım Gereksinimleri
 
-- Python 3.10+
-- PyTorch 2.0+
-- Transformers 4.30+
-- CUDA (opsiyonel, GPU desteği için)
+1B+ parametreli bir modeli eğitmek güçlü bir donanım gerektirir:
+
+- **Minimum**: 1 x NVIDIA RTX 3090 / 4090 (24GB VRAM)
+- **Önerilen**: 1-4 x NVIDIA A100 / H100 (40GB+ VRAM)
+- **CPU RAM**: 64GB+
+- **Depolama**: 100GB+ (Dataset'ler, cache ve model checkpoint'leri için)
 
 ## 🛠️ Kurulum
 
-1. **Repository'yi klonla:**
+1.  **Projeyi Klonlayın:**
+    ```bash
+    git clone <repo-url>
+    cd reuko-1B
+    ```
+
+2.  **Bağımlılıkları Yükleyin:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Paketi Geliştirme Modunda Yükleyin:**
+    Bu komut, `reuko-train` gibi CLI araçlarını kullanılabilir hale getirir.
+    ```bash
+    pip install -e .
+    ```
+
+## 🚀 Eğitimi Başlatma
+
+Eğitimi başlatmak için `reuko-train` komutunu ve `config.yaml` dosyasını kullanacaksınız.
+
+### Tek GPU ile Eğitim (DeepSpeed + LoRA)
+
+Bu en yaygın ve verimli yöntemdir.
+
 ```bash
-git clone <repo-url>
-cd reuko-1B
+# Hem QA hem de Summarization görevleri için modeli eğit
+# DeepSpeed, eğitimi otomatik olarak yönetecek
+deepspeed --num_gpus=1 reuko_1b/cli/train.py --config config.yaml --task both
 ```
 
-2. **Bağımlılıkları yükle:**
+### Sadece Tek Bir Görev İçin Eğitim
+
 ```bash
-pip install -r requirements.txt
+# Sadece Question Answering (QA) modelini eğit
+deepspeed --num_gpus=1 reuko_1b/cli/train.py --config config.yaml --task qa
+
+# Sadece Summarization modelini eğit
+deepspeed --num_gpus=1 reuko_1b/cli/train.py --config config.yaml --task summarization
 ```
 
-3. **Notebook'u çalıştır:**
+### Çoklu GPU ile Eğitim
+
+Eğer 2 adet GPU'nuz varsa, `num_gpus` parametresini değiştirmeniz yeterlidir.
+
 ```bash
-jupyter notebook reuko_mini_pipeline.ipynb
+# 2 GPU ile QA modelini eğit
+deepspeed --num_gpus=2 reuko_1b/cli/train.py --config config.yaml --task qa
 ```
 
-## 📚 Kullanım
+### Eğitim Sırasında İzleme (Monitoring)
 
-### Hızlı Başlangıç
+Eğer `config.yaml` dosyasında `use_wandb: true` ayarı aktif ise, eğitim başladığında size bir **Weights & Biases** linki verilecektir. Bu linki tarayıcınızda açarak eğitiminizi canlı olarak takip edebilirsiniz.
 
-1. `reuko_mini_pipeline.ipynb` dosyasını aç
-2. Tüm hücreleri sırasıyla çalıştır
-3. Model otomatik olarak eğitilir ve test edilir
+## ⚙️ Yapılandırma (`config.yaml`)
 
-### QA Örneği
+Eğitimi özelleştirmek için `config.yaml` dosyasını düzenleyebilirsiniz:
 
-```python
-question = "Who developed Python?"
-context = "Python was created by Guido van Rossum in 1991."
-answer = test_qa(question, context)
-print(f"Answer: {answer}")
+- **`model.name`**: Hugging Face'den baz alınacak model.
+- **`training.batch_size`**: GPU başına batch boyutu (Genellikle 1B modeller için 1'dir).
+- **`training.gradient_accumulation_steps`**: Etkin batch boyutunu artırmak için.
+- **`peft.enabled`**: LoRA ile eğitimi aç/kapa.
+- **`deepspeed.enabled`**: DeepSpeed'i aç/kapa.
+
+## 🐍 Python API ile Kullanım
+
+Eğitilmiş modelleri kullanmak için `example_usage.py` dosyasına göz atın.
+
+```bash
+python example_usage.py
 ```
-
-### Summarization Örneği
-
-```python
-text = "Long article text here..."
-summary = test_summarization(text)
-print(f"Summary: {summary}")
-```
-
-## 🎯 Model Performansı
-
-- **Model**: T5-small (60M parametreler)
-- **Training**: 2 epoch, mini dataset
-- **Hız**: ~5 saniye/batch (CPU)
-- **Bellek**: ~2GB RAM
 
 ## 📁 Proje Yapısı
 
 ```
 reuko-1B/
-├── reuko_mini_pipeline.ipynb   # Ana notebook
-├── config.py                   # Konfigürasyon
-├── utils.py                    # Yardımcı fonksiyonlar
-├── requirements.txt            # Bağımlılıklar
-├── setup.py                    # Kurulum scripti
-├── README.md                   # Bu dosya
-└── reuko_mini/                 # Model çıktıları
-    ├── qa_model/              # QA modeli
-    └── summary_model/         # Summarization modeli
+├── reuko_1b/               # Ana Python paketi
+│   ├── cli/                # Komut satırı arayüzleri (train, test)
+│   ├── models/             # Model mimarileri (base, custom_t5)
+│   ├── pipeline/           # Eğitim ve inference pipeline'ları
+│   └── utils/              # Yardımcı modüller (config, logger)
+├── config.yaml             # Ana konfigürasyon dosyası
+├── ds_config.json          # DeepSpeed konfigürasyonu
+├── setup.py                # Paket kurulum script'i
+├── requirements.txt        # Gerekli kütüphaneler
+└── README.md               # Bu doküman
 ```
+---
 
-## ⚙️ Konfigürasyon
-
-`config.py` dosyasında aşağıdaki parametreleri değiştirebilirsiniz:
-
-- `BATCH_SIZE`: Batch büyüklüğü (varsayılan: 4)
-- `NUM_EPOCHS`: Epoch sayısı (varsayılan: 2)
-- `QA_TRAIN_SIZE`: QA training veri boyutu (varsayılan: 1000)
-- `LEARNING_RATE`: Öğrenme oranı (varsayılan: 5e-4)
-
-## 🔧 Geliştirme
-
-### Yeni Veri Seti Ekleme
-
-```python
-from utils import ReukoUtils
-
-utils = ReukoUtils(tokenizer)
-processed_data = utils.preprocess_qa_batch(new_dataset)
-```
-
-### Model İyileştirme
-
-1. **Daha fazla veri**: `config.py`'da veri boyutlarını artır
-2. **Daha uzun eğitim**: `NUM_EPOCHS` değerini artır
-3. **Daha büyük model**: `MODEL_NAME`'i `t5-base` olarak değiştir
-
-## 📊 Sonuçlar
-
-Notebook çalıştırıldığında:
-- Training loss grafikleri gösterilir
-- QA örnekleri test edilir
-- Summarization örnekleri test edilir
+Made with ❤️ by Rei Calasso
 - Model performans metrikleri yazdırılır
 
 ## 🤝 Katkıda Bulunma
