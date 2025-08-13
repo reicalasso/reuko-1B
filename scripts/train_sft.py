@@ -35,7 +35,7 @@ args = TrainingArguments(
     save_strategy="epoch",
     logging_dir="logs",
     logging_steps=10,
-    fp16=True
+    fp16=False
 )
 
 trainer = Trainer(
